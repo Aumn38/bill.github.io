@@ -19,8 +19,8 @@
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;overflow-x:clip}
 a{color:inherit}
 ::selection{background:var(--accent);color:#04100a}
 ::-webkit-scrollbar{width:5px;height:5px}
@@ -70,7 +70,7 @@ nav.main a:hover{color:var(--accent)}
 /* hero */
 .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:150px 0 56px;position:relative}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
-@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-visual{display:none}}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-visual{display:block;height:340px;margin-top:8px}}
 .hero h1{font-size:clamp(56px,7.5vw,104px);line-height:.98;letter-spacing:-.02em;font-weight:700}
 .hero h1 .gr{color:var(--accent)}
 .hero .rule{width:56px;height:2px;background:var(--accent);margin:32px 0 24px}
@@ -101,7 +101,7 @@ nav.main a:hover{color:var(--accent)}
 .ms .mi{width:24px;height:2px;background:var(--line2);flex:none;transition:all .3s}
 .ms.active{color:var(--fg)}
 .ms.active .mi{background:var(--accent);width:40px}
-@media(max-width:900px){.morph-sticky{grid-template-columns:1fr}.morph-canvas{height:46vh}}
+@media(max-width:900px){.morph-wrap{height:auto}.morph-sticky{position:relative;height:auto;grid-template-columns:1fr}.morph-canvas{height:46vh}}
 
 /* sections */
 section{padding:150px 0}
@@ -502,6 +502,7 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
     (function morphLoop(time){
       requestAnimationFrame(morphLoop);
       if(!morphVisible) return;
+      if(window.innerWidth <= 900){ drawMorph((time % 12000) / 12000, time); return; }
       drawMorph(morphProgress(), time);
     })(0);
   }
