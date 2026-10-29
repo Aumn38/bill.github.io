@@ -127,6 +127,14 @@ section h2.reveal.visible::after{transform:scaleX(1)}
 #termClose:hover{color:var(--accent);border-color:rgba(43,255,163,.5)}
 @media (prefers-reduced-motion: reduce){.cat{transition:none}.cat.show svg{animation:none}.cat .eye{animation:none}}
 
+.sky{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:linear-gradient(180deg,rgba(64,140,125,.42) 0%,rgba(20,60,55,.28) 28%,rgba(8,20,18,.12) 52%,#050807 78%)}
+.sky i{position:absolute;border-radius:50%;filter:blur(42px)}
+.sky i:nth-child(1){width:60vw;height:22vh;left:8%;top:-4%;background:radial-gradient(ellipse,rgba(180,230,220,.20),transparent 70%)}
+.sky i:nth-child(2){width:45vw;height:18vh;right:4%;top:10%;background:radial-gradient(ellipse,rgba(140,200,190,.14),transparent 70%)}
+.sky i:nth-child(3){width:30vw;height:14vh;left:38%;top:22%;background:radial-gradient(ellipse,rgba(220,240,235,.10),transparent 70%)}
+header{transition:background .35s}
+header.scrolled{background:rgba(5,8,7,.93)}
+
 /* loader */
 .loader{position:fixed;inset:0;background:#030604;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;animation:loaderOut .6s ease 1.4s forwards}
 @keyframes loaderOut{to{opacity:0;visibility:hidden}}
@@ -262,6 +270,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
 <body>
 
 <div id="progress"></div>
+<div class="sky" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="bg-watermark" aria-hidden="true"><span style="top:2%;left:-4%;font-size:300px">bill</span><span style="top:30%;right:-6%;font-size:360px">bill</span><span style="top:56%;left:6%;font-size:240px">bill</span><span style="top:80%;right:4%;font-size:300px">bill</span><span style="top:44%;left:36%;font-size:200px">bill</span></div>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
 <div class="loader" id="loader"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><div class="lt">BILL — LOADING SIGNAL</div></div>
@@ -753,8 +762,9 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
       }
     }
     var heroEl = document.querySelector('.hero');
+    var headEl = document.querySelector('header');
     var prog = document.getElementById('progress');
-    function onScroll(){ var h = document.documentElement; var max = h.scrollHeight - h.clientHeight; prog.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%'; if(heroEl){ var y = window.scrollY; heroEl.style.transform = 'translateY(' + (y * 0.12).toFixed(1) + 'px)'; } }
+    function onScroll(){ var h = document.documentElement; var max = h.scrollHeight - h.clientHeight; prog.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%'; if(headEl){ headEl.classList.toggle('scrolled', window.scrollY > 40); } if(heroEl){ var y = window.scrollY; heroEl.style.transform = 'translateY(' + (y * 0.12).toFixed(1) + 'px)'; } }
     window.addEventListener('scroll', onScroll, {passive: true}); onScroll();
     if(window.matchMedia('(pointer:fine)').matches){
       document.querySelectorAll('.btn').forEach(function(b){
