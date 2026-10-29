@@ -20,7 +20,7 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth;overflow-x:clip}
-body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;overflow-x:clip}
+body{background:var(--bg);background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:56px 56px;color:var(--fg);font-family:var(--sans);line-height:1.6;overflow-x:clip}
 a{color:inherit}
 ::selection{background:var(--accent);color:#04100a}
 ::-webkit-scrollbar{width:5px;height:5px}
@@ -30,6 +30,18 @@ a{color:inherit}
 .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;font-size:11px}
 .kicker{font-family:var(--mono);text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--dim);margin-bottom:20px}
 .kicker::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px}
+
+#progress{position:fixed;top:0;left:0;height:2px;background:var(--accent);width:0;z-index:300;box-shadow:0 0 12px rgba(43,255,163,.8)}
+.ticker{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:14px 0;white-space:nowrap}
+.ticker .track{display:inline-flex;animation:tick 36s linear infinite}
+.ticker.rev .track{animation-direction:reverse;animation-duration:42s}
+.ticker span{font-family:var(--mono);letter-spacing:.25em;font-size:12px;color:var(--dim);padding-right:32px}
+.ticker span b{color:var(--accent);font-weight:400}
+@keyframes tick{to{transform:translateX(-50%)}}
+.build .item{transition:border-color .3s,background .3s}
+.build .item:hover{border-top-color:rgba(43,255,163,.4);background:rgba(43,255,163,.03)}
+.build h3 a::after{content:" \2192";color:var(--accent);opacity:0;transition:opacity .25s}
+.build .item:hover h3 a::after{opacity:1}
 
 /* loader */
 .loader{position:fixed;inset:0;background:#030604;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;animation:loaderOut .6s ease 1.4s forwards}
@@ -89,6 +101,9 @@ nav.main a:hover{color:var(--accent)}
 .status .row .k{color:var(--dim)}
 .status .row .v{color:var(--fg)}
 .status .row .v.hot{color:var(--accent)}
+
+.hero h1 .gr{background:linear-gradient(110deg,#2BFFA3 30%,#d6ffec 50%,#2BFFA3 70%);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 4s linear infinite;text-shadow:0 0 32px rgba(43,255,163,.25)}
+@keyframes shine{to{background-position:-200% 0}}
 
 /* morph (scroll-driven states) */
 .morph-wrap{height:320vh;position:relative}
@@ -157,11 +172,12 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
 /* reveal */
 .reveal{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s ease}
 .reveal.visible{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}.ticker .track{animation:none}.hero h1 .gr{animation:none}}
 </style>
 </head>
 <body>
 
+<div id="progress"></div>
 <div class="loader" id="loader"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><div class="lt">BILL — LOADING SIGNAL</div></div>
 <div class="cursor-ring" id="cring"></div>
 <div class="cursor-dot" id="cdot"></div>
@@ -211,6 +227,8 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
 </div>
 </div>
 </div>
+
+<div class="ticker"><div class="track"><span>PROMPT TOOLS <b>✦</b> SELF-HOSTED <b>✦</b> VPS <b>✦</b> CLOUD MAIL <b>✦</b> R2 <b>✦</b> C <b>✦</b> EDGE <b>✦</b>&nbsp;</span><span>PROMPT TOOLS <b>✦</b> SELF-HOSTED <b>✦</b> VPS <b>✦</b> CLOUD MAIL <b>✦</b> R2 <b>✦</b> C <b>✦</b> EDGE <b>✦</b>&nbsp;</span></div></div>
 
 <div class="wrap">
 <div class="morph-wrap" id="morphWrap">
@@ -307,6 +325,8 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
 </section>
 </div>
 
+<div class="ticker rev"><div class="track"><span>发现 <b>✦</b> 设计 <b>✦</b> 上线 <b>✦</b> 复盘 <b>✦</b> 再发现 <b>✦</b>&nbsp;</span><span>发现 <b>✦</b> 设计 <b>✦</b> 上线 <b>✦</b> 复盘 <b>✦</b> 再发现 <b>✦</b>&nbsp;</span></div></div>
+
 <footer id="contact" style="scroll-margin-top:90px">
 <div class="wrap">
 <div class="foot-grid">
@@ -352,6 +372,9 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
       pts.push({x: Math.random(), y: Math.random(), s: Math.random() * 1.8 + 0.4, v: Math.random() * 0.0004 + 0.0001, o: Math.random() * Math.PI * 2});
     }
     var t = 0;
+    var fx = -999, fy = -999, pulses = [];
+    canvas.parentElement.addEventListener('pointermove', function(e){ var r = canvas.getBoundingClientRect(); fx = e.clientX - r.left; fy = e.clientY - r.top; });
+    canvas.parentElement.addEventListener('pointerleave', function(){ fx = -999; fy = -999; });
     function draw(){
       ctx.clearRect(0, 0, W, H);
       var rcx = W * 0.68, rcy = H * 0.42;
@@ -388,16 +411,46 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
       ctx.beginPath();
       ctx.arc(rcx, rcy, 140, Math.PI * 0.2 + t * 0.002, Math.PI * 1.1 + t * 0.002);
       ctx.stroke();
+      ctx.save();
+      ctx.strokeStyle = 'rgba(43,255,163,0.20)';
+      ctx.setLineDash([3, 12]);
+      ctx.lineDashOffset = -t * 0.5;
+      ctx.beginPath(); ctx.arc(rcx, rcy, 168, 0, Math.PI * 2); ctx.stroke();
+      ctx.restore();
+      if(t % 210 === 0 && pulses.length < 3) pulses.push({r: 100, a: 0.5});
+      for(var pi = pulses.length - 1; pi >= 0; pi--){
+        var pu = pulses[pi]; pu.r += 1.6; pu.a -= 0.004;
+        if(pu.a <= 0){ pulses.splice(pi, 1); continue; }
+        ctx.strokeStyle = 'rgba(43,255,163,' + pu.a.toFixed(2) + ')';
+        ctx.beginPath(); ctx.arc(rcx, rcy, pu.r, 0, Math.PI * 2); ctx.stroke();
+      }
       for(var i = 0; i < pts.length; i++){
         var p = pts[i];
         p.y -= p.v; p.o += 0.01;
         if(p.y < -0.05){ p.y = 1.05; p.x = Math.random(); }
-        var px = p.x * W, py = p.y * H;
+        var qx = p.x * W, qy = p.y * H;
+        if(fx > -100){
+          var ddx = qx - fx, ddy = qy - fy;
+          var dd = Math.sqrt(ddx * ddx + ddy * ddy);
+          if(dd < 110 && dd > 1){ qx += ddx / dd * (110 - dd) * 0.5; qy += ddy / dd * (110 - dd) * 0.5; }
+        }
         var tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(p.o));
         ctx.fillStyle = 'rgba(43,255,163,' + (0.25 + 0.55 * tw).toFixed(2) + ')';
         ctx.beginPath();
-        ctx.arc(px, py, p.s, 0, Math.PI * 2);
+        ctx.arc(qx, qy, p.s, 0, Math.PI * 2);
         ctx.fill();
+        p._x = qx; p._y = qy;
+      }
+      for(var i = 0; i < pts.length; i++){
+        for(var j = i + 1; j < pts.length; j++){
+          var dx = pts[i]._x - pts[j]._x, dy = pts[i]._y - pts[j]._y;
+          var d = Math.sqrt(dx * dx + dy * dy);
+          if(d < 90){
+            ctx.strokeStyle = 'rgba(43,255,163,' + ((1 - d / 90) * 0.22).toFixed(2) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(pts[i]._x, pts[i]._y); ctx.lineTo(pts[j]._x, pts[j]._y); ctx.stroke();
+          }
+        }
       }
       ctx.fillStyle = 'rgba(43,255,163,0.9)';
       ctx.beginPath();
@@ -443,6 +496,12 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
     function drawMorph(p, time){
       mctx.clearRect(0, 0, MW, MH);
       var cx = MW * 0.5, cy = MH * 0.5;
+      mctx.save();
+      mctx.strokeStyle = 'rgba(43,255,163,0.18)';
+      mctx.setLineDash([3, 12]);
+      mctx.lineDashOffset = -time * 0.02;
+      mctx.beginPath(); mctx.arc(cx, cy, Math.min(MW, MH) * 0.38, 0, Math.PI * 2); mctx.stroke();
+      mctx.restore();
       var wA = Math.max(0, 1 - p * 3);
       var wB = p < 0.33 ? 0 : (p < 0.66 ? (p - 0.33) / 0.33 : 1 - (p - 0.66) / 0.34);
       var wC = p < 0.66 ? 0 : (p - 0.66) / 0.34;
@@ -499,13 +558,24 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
       var idx = p < 0.33 ? 0 : (p < 0.66 ? 1 : 2);
       states.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
     }
+    var mReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     (function morphLoop(time){
       requestAnimationFrame(morphLoop);
       if(!morphVisible) return;
+      if(mReduced){ drawMorph(0.66, 0); return; }
       if(window.innerWidth <= 900){ drawMorph((time % 12000) / 12000, time); return; }
       drawMorph(morphProgress(), time);
     })(0);
   }
+    var prog = document.getElementById('progress');
+    function onScroll(){ var h = document.documentElement; var max = h.scrollHeight - h.clientHeight; prog.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%'; }
+    window.addEventListener('scroll', onScroll, {passive: true}); onScroll();
+    if(window.matchMedia('(pointer:fine)').matches){
+      document.querySelectorAll('.btn').forEach(function(b){
+        b.addEventListener('mousemove', function(e){ var r = b.getBoundingClientRect(); var x = e.clientX - (r.left + r.width / 2); var y = e.clientY - (r.top + r.height / 2); b.style.transition = 'transform .1s'; b.style.transform = 'translate(' + (x * 0.15).toFixed(1) + 'px,' + (y * 0.25).toFixed(1) + 'px)'; });
+        b.addEventListener('mouseleave', function(){ b.style.transition = 'transform .4s'; b.style.transform = 'translate(0,0)'; });
+      });
+    }
 })();
 </script>
 </body>
