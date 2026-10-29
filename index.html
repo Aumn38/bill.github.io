@@ -5,119 +5,341 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>bill — 个人主页</title>
 <meta name="description" content="bill 的个人主页：计算机专业学生，做 AI 提示词小工具，搭自建服务，顺带学 C。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0d1117;--fg:#e6edf3;--muted:#8b949e;--accent:#58a6ff;--card:#161b22;--border:#30363d}
+:root{
+  --bg:#050807; --panel:#0A0E0C; --panel2:#0B1210;
+  --fg:#F2F5F1; --muted:#B9BDB8; --dim:#8A918C;
+  --accent:#2BFFA3; --deep:#0E5B3F; --deep2:#123528;
+  --line:rgba(255,255,255,.10); --line2:rgba(255,255,255,.16);
+  --watermark:#171B19;
+  --sans:"Space Grotesk",-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.7}
-.wrap{max-width:960px;margin:0 auto;padding:0 24px 64px}
-.topline{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;padding:28px 0;color:var(--muted);font-size:14px;letter-spacing:2px}
-.hero{padding:72px 0 64px}
-.hero h1{font-size:clamp(38px,6vw,64px);line-height:1.25;letter-spacing:.01em}
-.hero h1 .hl{color:var(--accent)}
-.hero p{color:var(--muted);font-size:17px;max-width:620px;margin-top:20px}
-.framing{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:44px 0;margin-bottom:64px}
-.framing h2{font-size:clamp(24px,3.4vw,34px);line-height:1.45;max-width:760px}
-section{margin-bottom:72px}
-.kicker{font-size:13px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
-section h2{font-size:clamp(24px,3vw,32px);line-height:1.4;margin-bottom:28px}
-.block{border-top:1px solid var(--border);padding:26px 0}
-.block .num{color:var(--muted);font-size:14px;letter-spacing:1px}
-.block h3{font-size:20px;margin:8px 0 8px}
-.block h3 a{color:inherit;text-decoration:none}
-.block h3 a:hover{color:var(--accent)}
-.block p{color:var(--muted);font-size:15px;max-width:680px}
-.tag{display:inline-block;font-size:12px;color:var(--accent);border:1px solid var(--border);border-radius:20px;padding:2px 10px;margin:10px 6px 0 0}
-.steps{display:grid;grid-template-columns:1fr 1fr;gap:0 32px}
-@media(max-width:700px){.steps{grid-template-columns:1fr}}
-.step{border-top:1px solid var(--border);padding:20px 0}
-.step h3{font-size:17px;margin-bottom:6px}
-.step p{color:var(--muted);font-size:14px}
-.checks{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:28px;color:var(--muted);font-size:14px}
-.principle{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:48px 0;margin-bottom:64px}
-.principle h2{font-size:clamp(24px,3.4vw,34px);line-height:1.45;max-width:760px;margin-bottom:14px}
-.principle p{color:var(--muted);max-width:640px}
-.about p{color:var(--muted);max-width:680px}
-ul.links{list-style:none;display:flex;gap:12px;flex-wrap:wrap;margin-top:20px}
-ul.links a{display:inline-block;padding:10px 20px;border:1px solid var(--border);border-radius:10px;color:var(--fg);text-decoration:none;font-size:14px}
-ul.links a:hover{border-color:var(--accent);color:var(--accent)}
-footer{margin-top:72px;color:var(--muted);font-size:13px;border-top:1px solid var(--border);padding-top:20px}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
+a{color:inherit}
+::selection{background:var(--accent);color:#04100a}
+.wrap{max-width:1320px;margin:0 auto;padding:0 32px}
+.mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;font-size:11px}
+.kicker{font-family:var(--mono);text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--dim);margin-bottom:20px}
+.kicker::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px}
+
+/* header */
+header{position:fixed;top:0;left:0;right:0;height:64px;z-index:50;background:rgba(5,8,7,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+header .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand .sq{width:12px;height:12px;background:var(--accent);flex:none}
+.brand .name{font-family:var(--mono);letter-spacing:.25em;font-size:13px;font-weight:700}
+nav.main{display:flex;gap:36px}
+nav.main a{font-family:var(--mono);letter-spacing:.2em;font-size:11px;text-transform:uppercase;color:var(--muted);text-decoration:none}
+nav.main a:hover{color:var(--accent)}
+.head-right{display:flex;align-items:center;gap:24px}
+.head-right .loc{font-family:var(--mono);letter-spacing:.18em;font-size:11px;color:var(--dim)}
+.btn{display:inline-block;font-family:var(--mono);letter-spacing:.2em;font-size:11px;text-transform:uppercase;text-decoration:none;padding:13px 22px;border-radius:0;transition:all .25s}
+.btn-solid{background:var(--accent);color:#04100a;font-weight:700}
+.btn-solid:hover{background:#7dffc8}
+.btn-ghost{background:transparent;color:var(--fg);border:1px solid var(--line2)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:900px){nav.main,.head-right .loc{display:none}}
+
+/* hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:150px 0 56px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-visual{display:none}}
+.hero h1{font-size:clamp(56px,7.5vw,104px);line-height:.98;letter-spacing:-.02em;font-weight:700}
+.hero h1 .gr{color:var(--accent)}
+.hero .rule{width:56px;height:2px;background:var(--accent);margin:32px 0 24px}
+.hero p.lead{color:var(--muted);font-size:18px;max-width:520px}
+.hero .cta{display:flex;gap:16px;flex-wrap:wrap;margin-top:36px}
+.hero .hint{font-family:var(--mono);letter-spacing:.2em;font-size:11px;color:var(--dim);margin-top:36px}
+.hero-visual{position:relative;height:560px;border:1px solid var(--line);background:radial-gradient(600px 400px at 70% 30%,rgba(43,255,163,.08),transparent 70%),var(--panel2);overflow:hidden}
+.hero-visual canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-visual .frame{position:absolute;inset:18px;border:1px solid rgba(255,255,255,.06);pointer-events:none}
+.hero-foot{margin-top:72px;display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap}
+.scroll-cue{display:flex;flex-direction:column;align-items:center;gap:12px}
+.scroll-cue .vl{width:1px;height:56px;background:linear-gradient(var(--accent),transparent)}
+.scroll-cue span{font-family:var(--mono);letter-spacing:.25em;font-size:10px;color:var(--dim);writing-mode:vertical-rl}
+.status{border:1px solid var(--line);background:var(--panel);padding:16px 20px;min-width:260px}
+.status .row{display:flex;justify-content:space-between;gap:32px;font-family:var(--mono);font-size:11px;letter-spacing:.15em;padding:5px 0}
+.status .row .k{color:var(--dim)}
+.status .row .v{color:var(--fg)}
+.status .row .v.hot{color:var(--accent)}
+
+/* sections */
+section{padding:150px 0}
+section h2{font-size:clamp(36px,4.5vw,64px);line-height:1.08;letter-spacing:-.015em;font-weight:700;margin-bottom:56px}
+.framing{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:120px 0}
+.framing h2{font-size:clamp(26px,3.4vw,44px);line-height:1.35;max-width:900px;margin:0}
+.framing h2 .gr{color:var(--accent)}
+
+/* build list */
+.build .item{display:grid;grid-template-columns:180px 1fr;gap:32px;border-top:1px solid var(--line);padding:40px 0}
+.build .item:last-child{border-bottom:1px solid var(--line)}
+@media(max-width:700px){.build .item{grid-template-columns:1fr;gap:8px}}
+.build .num{font-family:var(--mono);letter-spacing:.2em;font-size:12px;color:var(--dim);padding-top:10px}
+.build .num b{color:var(--accent);font-weight:400}
+.build h3{font-size:clamp(26px,3vw,40px);line-height:1.1;letter-spacing:-.01em;margin-bottom:14px}
+.build h3 a{text-decoration:none}
+.build h3 a:hover{color:var(--accent)}
+.build p{color:var(--muted);font-size:17px;max-width:680px}
+.tag{display:inline-block;font-family:var(--mono);letter-spacing:.15em;font-size:11px;color:var(--accent);border:1px solid var(--line);padding:5px 12px;margin:16px 8px 0 0}
+
+/* method */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:32px}
+@media(max-width:900px){.steps{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.steps{grid-template-columns:1fr}}
+.step{border-top:1px solid var(--line);padding-top:24px}
+.step .sn{font-family:var(--mono);letter-spacing:.2em;font-size:11px;color:var(--accent)}
+.step h3{font-size:20px;margin:14px 0 8px}
+.step p{color:var(--muted);font-size:15px}
+.checks{display:flex;flex-wrap:wrap;gap:12px 32px;margin-top:48px}
+.checks span{font-family:var(--mono);letter-spacing:.15em;font-size:11px;color:var(--muted)}
+.checks span::before{content:"✓ ";color:var(--accent)}
+
+/* principle */
+.principle{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:120px 0}
+.principle h2{font-size:clamp(26px,3.4vw,44px);line-height:1.3;max-width:900px;margin-bottom:18px}
+.principle p{color:var(--muted);max-width:640px;font-size:17px}
+
+/* about + footer */
+.about p{color:var(--muted);font-size:17px;max-width:720px}
+footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
+.foot-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:48px;padding-bottom:72px}
+@media(max-width:800px){.foot-grid{grid-template-columns:1fr}}
+.foot-grid h4{font-family:var(--mono);letter-spacing:.22em;font-size:11px;color:var(--dim);margin-bottom:20px}
+.foot-grid p,.foot-grid li{color:var(--muted);font-size:15px}
+.foot-grid ul{list-style:none}
+.foot-grid li{margin-bottom:12px}
+.foot-grid a{text-decoration:none}
+.foot-grid a:hover{color:var(--accent)}
+.foot-grid .coord{font-family:var(--mono);letter-spacing:.12em;font-size:12px;line-height:2.1}
+.foot-base{border-top:1px solid var(--line);padding:22px 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);letter-spacing:.15em;font-size:11px;color:var(--dim)}
+.watermark{font-size:clamp(120px,22vw,340px);line-height:.75;font-weight:700;letter-spacing:-.03em;color:var(--watermark);text-align:center;transform:translateY(28%);user-select:none;pointer-events:none;white-space:nowrap}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s ease,transform .9s ease}
+.reveal.visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
+
+<header>
 <div class="wrap">
+<a class="brand" href="#"><span class="sq"></span><span class="name">BILL</span></a>
+<nav class="main">
+<a href="#build">项目</a>
+<a href="#method">方法</a>
+<a href="#about">关于</a>
+<a href="#contact">联系</a>
+</nav>
+<div class="head-right">
+<span class="loc">广东，中国</span>
+<a class="btn btn-solid" href="#contact">找到我</a>
+</div>
+</div>
+</header>
 
-<div class="topline"><span>BILL</span><span>个人主页</span></div>
-
+<div class="wrap">
 <div class="hero">
-<h1>能自己搭的，<br>就<span class="hl">不想租</span>。</h1>
-<p>一名计算机专业学生。平时做 AI 提示词小工具，搭自建服务，顺带学 C——工具不好用，就自己写一个；服务不好用，就自己搭一个。</p>
+<div class="hero-grid">
+<div>
+<div class="mono" style="color:var(--dim)">BILL — 个人主页</div>
+<h1 style="margin-top:24px">能自己搭的，<br>就不想<span class="gr">租。</span></h1>
+<div class="rule"></div>
+<p class="lead">一名计算机专业学生。平时做 AI 提示词小工具，搭自建服务，顺带学 C——工具不好用，就自己写一个；服务不好用，就自己搭一个。</p>
+<div class="cta">
+<a class="btn btn-solid" href="#build">看看工具</a>
+<a class="btn btn-ghost" href="#contact">怎么联系</a>
+</div>
+<div class="hint">SCROLL — 下面是方法与项目</div>
+</div>
+<div class="hero-visual">
+<canvas id="signal" width="640" height="560"></canvas>
+<div class="frame"></div>
+</div>
+</div>
+<div class="hero-foot">
+<div class="scroll-cue"><span>SCROLL</span><div class="vl"></div></div>
+<div class="status">
+<div class="row"><span class="k">STATE</span><span class="v hot">● BUILDING</span></div>
+<div class="row"><span class="k">INPUT</span><span class="v">想法</span></div>
+<div class="row"><span class="k">OUTPUT</span><span class="v">能用的工具</span></div>
+</div>
+</div>
+</div>
 </div>
 
-<div class="framing">
-<h2>模型不好用，往往不是模型的问题；服务不好用，往往也不是服务的问题。缺的是中间那层趁手的东西——我就做那层。</h2>
+<div class="wrap">
+<div class="framing reveal">
+<h2>模型不好用，往往不是模型的问题；服务不好用，往往也不是服务的问题。缺的是中间那层趁手的东西<span class="gr">——我就做那层。</span></h2>
+</div>
 </div>
 
-<section>
+<div class="wrap">
+<section class="build" id="build" style="scroll-margin-top:90px">
 <div class="kicker">What I build</div>
-<h2>在做的东西</h2>
+<h2 class="reveal">在做的东西</h2>
 
-<div class="block">
-<div class="num">01 / AI 提示词工具</div>
+<div class="item reveal">
+<div class="num"><b>01</b> / 提示词工具</div>
+<div>
 <h3><a href="https://clipprompt.kill-bill.de5.net/">ClipPrompt — 视频反推提示词</a></h3>
 <p>把一段短视频反推成结构化的视频生成提示词，带分镜表，Wan 3.0 格式。第一次免费，之后 10 次 5 美元。</p>
-<span class="tag">Wan 3.0</span><span class="tag">Qwen3-VL</span><span class="tag">Prompt</span>
+<span class="tag">WAN 3.0</span><span class="tag">QWEN3-VL</span><span class="tag">PROMPT</span>
+</div>
 </div>
 
-<div class="block">
-<div class="num">02 / AI 提示词工具</div>
+<div class="item reveal">
+<div class="num"><b>02</b> / 提示词工具</div>
+<div>
 <h3><a href="https://ideogram45.qqbridge.workers.dev/">Ideogram 4.5 Prompt Builder</a></h3>
 <p>给 Ideogram 4.5 拼精确提示词的免费工具：海报、菜单、包装上的文字、配色和版式一次写对，还能生成多轮精修的编辑指令。</p>
-<span class="tag">Ideogram 4.5</span><span class="tag">Prompt</span>
+<span class="tag">IDEOGRAM 4.5</span><span class="tag">PROMPT</span>
+</div>
 </div>
 
-<div class="block">
-<div class="num">03 / AI 提示词工具</div>
+<div class="item reveal">
+<div class="num"><b>03</b> / 提示词工具</div>
+<div>
 <h3><a href="https://flux3klein.qqbridge.workers.dev/">FLUX 3 Klein Prompt Builder</a></h3>
 <p>给 Black Forest Labs 的开源模型 FLUX 3 Image Klein 写 upsampler 风格长描述、画布局框导出 boxes.json 的免费工具。</p>
-<span class="tag">FLUX 3</span><span class="tag">开源模型</span><span class="tag">Prompt</span>
+<span class="tag">FLUX 3</span><span class="tag">开源模型</span><span class="tag">PROMPT</span>
+</div>
 </div>
 
-<div class="block">
-<div class="num">04 / 自建服务</div>
+<div class="item reveal">
+<div class="num"><b>04</b> / 自建服务</div>
+<div>
 <h3>1 号网盘 · 自建邮箱 · VPS 节点</h3>
 <p>基于 Cloudflare Workers + R2 的个人云盘后端，电脑关机也不影响访问；用开源 cloud-mail 在自己的域名上搭的邮件系统；一台 VPS 上跑着 sing-box 节点和几个常驻服务。</p>
-<span class="tag">Cloudflare Workers</span><span class="tag">R2</span><span class="tag">D1</span><span class="tag">VPS</span>
+<span class="tag">CLOUDFLARE WORKERS</span><span class="tag">R2</span><span class="tag">D1</span><span class="tag">VPS</span>
+</div>
 </div>
 </section>
+</div>
 
-<section>
+<div class="wrap">
+<section id="method" style="scroll-margin-top:90px">
 <div class="kicker">How it takes shape</div>
-<h2>先能用，再好用。</h2>
+<h2 class="reveal">先能用，再好用。</h2>
 <div class="steps">
-<div class="step"><h3>发现</h3><p>先找到真实需求：模型出图文字总错、网盘关机就断、邮箱受制于人。</p></div>
-<div class="step"><h3>设计</h3><p>页面先能用再说，工具免费先行，复杂功能往后放。</p></div>
-<div class="step"><h3>上线</h3><p>边缘部署，提交收录，两周复盘，没展现就换方向。</p></div>
-<div class="step"><h3>迭代</h3><p>按真实反馈改，不堆功能。</p></div>
+<div class="step reveal"><div class="sn">01 / 发现</div><h3>发现</h3><p>先找到真实需求：模型出图文字总错、网盘关机就断、邮箱受制于人。</p></div>
+<div class="step reveal"><div class="sn">02 / 设计</div><h3>设计</h3><p>页面先能用再说，工具免费先行，复杂功能往后放。</p></div>
+<div class="step reveal"><div class="sn">03 / 上线</div><h3>上线</h3><p>边缘部署，提交收录，两周复盘，没展现就换方向。</p></div>
+<div class="step reveal"><div class="sn">04 / 迭代</div><h3>迭代</h3><p>按真实反馈改，不堆功能。</p></div>
 </div>
-<div class="checks"><span>✓ 先能用，再好用</span><span>✓ 免费先行</span><span>✓ 边缘部署</span><span>✓ 两周复盘</span></div>
+<div class="checks reveal"><span>先能用，再好用</span><span>免费先行</span><span>边缘部署</span><span>两周复盘</span></div>
 </section>
+</div>
 
-<div class="principle">
-<h2>工具应该减少折腾，而不是增加折腾。</h2>
+<div class="wrap">
+<div class="principle reveal">
+<h2>工具应该减少折腾，<span style="color:var(--accent)">而不是增加折腾。</span></h2>
 <p>从实际需求出发，做出来的东西要清晰、耐用、真的能用——而不是多一个需要伺候的系统。</p>
 </div>
-
-<section class="about">
-<div class="kicker">About</div>
-<h2>bill</h2>
-<p>计算机专业学生，正在学 C 程序设计。平时喜欢折腾迷你主机、Cloudflare 和各种自建服务。做 AI 提示词小工具是主业方向，C 语言学习是课业——跟着谭浩强《C程序设计》从头学起，每周交实验报告，Dev-C++ 和 Linux gcc 双环境调试。</p>
-<ul class="links">
-<li><a href="https://github.com/Aumn38">GitHub @Aumn38</a></li>
-<li><a href="mailto:peter.12312367@gmail.com">peter.12312367@gmail.com</a></li>
-</ul>
-</section>
-
-<footer>© 2026 bill</footer>
 </div>
+
+<div class="wrap">
+<section class="about" id="about" style="scroll-margin-top:90px;padding-bottom:90px">
+<div class="kicker">About</div>
+<h2 class="reveal">bill</h2>
+<p class="reveal">计算机专业学生，正在学 C 程序设计。平时喜欢折腾迷你主机、Cloudflare 和各种自建服务。做 AI 提示词小工具是主业方向，C 语言学习是课业——跟着谭浩强《C程序设计》从头学起，每周交实验报告，Dev-C++ 和 Linux gcc 双环境调试。</p>
+</section>
+</div>
+
+<footer id="contact" style="scroll-margin-top:90px">
+<div class="wrap">
+<div class="foot-grid">
+<div>
+<h4>简介</h4>
+<p>bill 的个人主页：做 AI 提示词小工具，搭自建服务，顺带学 C。能自己搭的，就不想租。</p>
+</div>
+<div>
+<h4>索引</h4>
+<ul>
+<li><a href="#build">在做的东西</a></li>
+<li><a href="#method">方法</a></li>
+<li><a href="#about">关于</a></li>
+<li><a href="https://github.com/Aumn38">GITHUB @AUMN38</a></li>
+</ul>
+</div>
+<div>
+<h4>联系坐标</h4>
+<div class="coord">地点 — 广东，中国<br>GitHub — <a href="https://github.com/Aumn38">@AUMN38</a><br>邮箱 — <a href="mailto:peter.12312367@gmail.com">PETER.12312367@GMAIL.COM</a></div>
+</div>
+</div>
+<div class="foot-base"><span>© 2026 BILL</span><span>BUILT, NOT RENTED</span></div>
+<div class="watermark">BILL</div>
+</div>
+</footer>
+
+<script>
+(function(){
+  var canvas = document.getElementById('signal');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var W, H, pts = [];
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function resize(){
+    var r = canvas.parentElement.getBoundingClientRect();
+    W = canvas.width = Math.max(300, r.width);
+    H = canvas.height = Math.max(300, r.height);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  var N = 90;
+  for(var i = 0; i < N; i++){
+    pts.push({x: Math.random(), y: Math.random(), s: Math.random() * 1.8 + 0.4, v: Math.random() * 0.0004 + 0.0001, o: Math.random() * Math.PI * 2});
+  }
+  var t = 0;
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(43,255,163,0.10)';
+    ctx.lineWidth = 1;
+    for(var k = 0; k < 3; k++){
+      ctx.beginPath();
+      for(var x = 0; x <= W; x += 8){
+        var y = H * (0.32 + k * 0.2) + Math.sin(x * 0.008 + t * 0.01 + k * 1.7) * 26;
+        if(x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+    }
+    ctx.strokeStyle = 'rgba(43,255,163,0.35)';
+    ctx.beginPath();
+    ctx.arc(W * 0.68, H * 0.42, 90 + Math.sin(t * 0.008) * 6, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(W * 0.68, H * 0.42, 140, Math.PI * 0.2 + t * 0.002, Math.PI * 1.1 + t * 0.002);
+    ctx.stroke();
+    for(var i = 0; i < pts.length; i++){
+      var p = pts[i];
+      p.y -= p.v; p.o += 0.01;
+      if(p.y < -0.05){ p.y = 1.05; p.x = Math.random(); }
+      var px = p.x * W, py = p.y * H;
+      var tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(p.o));
+      ctx.fillStyle = 'rgba(43,255,163,' + (0.25 + 0.55 * tw).toFixed(2) + ')';
+      ctx.beginPath();
+      ctx.arc(px, py, p.s, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.fillStyle = 'rgba(43,255,163,0.9)';
+    ctx.beginPath();
+    ctx.arc(W * 0.68 + Math.cos(t * 0.01) * 90, H * 0.42 + Math.sin(t * 0.01) * 90, 3.2, 0, Math.PI * 2);
+    ctx.fill();
+    t++;
+    if(!reduced) requestAnimationFrame(draw);
+  }
+  draw();
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, {threshold: 0.12});
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+})();
+</script>
 </body>
 </html>
