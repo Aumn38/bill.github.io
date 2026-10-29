@@ -52,7 +52,6 @@ a{color:inherit}
 .aurora i:nth-child(3){width:420px;height:420px;left:32%;bottom:-160px;background:radial-gradient(circle,rgba(43,255,163,.10),transparent 70%);animation:drift1 38s ease-in-out infinite alternate-reverse}
 @keyframes drift1{from{transform:translate(0,0)}to{transform:translate(120px,60px)}}
 @keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-100px,-70px)}}
-.grain{position:fixed;inset:0;z-index:4;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E")}
 .type-line{font-family:var(--mono);font-size:13px;letter-spacing:.12em;color:var(--muted);margin-top:22px;min-height:22px}
 .type-line .caret{display:inline-block;width:9px;height:15px;background:var(--accent);vertical-align:-2px;margin-left:3px;animation:blink 1s steps(1) infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -75,6 +74,7 @@ section h2.reveal.visible::after{transform:scaleX(1)}
 
 .hero-col{display:flex;flex-direction:column;gap:16px}
 @media(max-width:900px){.hero-col .hero-visual{height:340px}}
+@media(max-width:900px){.wrap{padding:0 16px}}
 .lab{border:1px solid var(--line);background:var(--panel);padding:20px}
 .lab-title{font-family:var(--mono);letter-spacing:.22em;font-size:11px;color:var(--dim);margin-bottom:16px}
 .lab label{display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:11px;letter-spacing:.15em;color:var(--muted);margin-bottom:12px}
@@ -182,7 +182,7 @@ nav.main a:hover{color:var(--accent)}
 .ms .mi{width:24px;height:2px;background:var(--line2);flex:none;transition:all .3s}
 .ms.active{color:var(--fg)}
 .ms.active .mi{background:var(--accent);width:40px}
-@media(max-width:900px){.morph-wrap{height:auto}.morph-sticky{position:relative;height:auto;grid-template-columns:1fr}.morph-canvas{height:46vh}}
+@media(max-width:900px){.morph-wrap{height:auto}.morph-sticky{position:relative;height:auto;grid-template-columns:1fr}.morph-canvas{height:58vh}}
 
 /* sections */
 section{padding:150px 0}
@@ -246,7 +246,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
 <div id="progress"></div>
 <div class="bg-watermark" aria-hidden="true"><span style="top:2%;left:-4%;font-size:300px">bill</span><span style="top:30%;right:-6%;font-size:360px">bill</span><span style="top:56%;left:6%;font-size:240px">bill</span><span style="top:80%;right:4%;font-size:300px">bill</span><span style="top:44%;left:36%;font-size:200px">bill</span></div>
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
-<div class="grain" aria-hidden="true"></div>
 <div class="loader" id="loader"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><div class="lt">BILL — LOADING SIGNAL</div></div>
 <div class="cursor-ring" id="cring"></div>
 <div class="cursor-dot" id="cdot"></div>
@@ -671,14 +670,14 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
         for(var i = 0; i < N; i++){
           var f = i / N;
           var a = f * Math.PI * 6 + time * 0.002;
-          var r = (1 - f) * Math.min(MW, MH) * 0.28;
+          var r = (1 - f) * Math.min(MW, MH) * 0.36;
           var x = cx + Math.cos(a) * r;
-          var y = cy + MH * 0.3 - f * MH * 0.6;
+          var y = cy + MH * 0.33 - f * MH * 0.66;
           mctx.fillStyle = 'rgba(43,255,163,' + (0.25 + 0.75 * f).toFixed(2) + ')';
           mctx.beginPath(); mctx.arc(x, y, 1.6 + f * 2, 0, Math.PI * 2); mctx.fill();
         }
         mctx.strokeStyle = 'rgba(43,255,163,0.25)';
-        mctx.beginPath(); mctx.moveTo(cx, cy + MH * 0.32); mctx.lineTo(cx, cy - MH * 0.32); mctx.stroke();
+        mctx.beginPath(); mctx.moveTo(cx, cy + MH * 0.34); mctx.lineTo(cx, cy - MH * 0.34); mctx.stroke();
         mctx.restore();
       }
       var idx = p < 0.33 ? 0 : (p < 0.66 ? 1 : 2);
@@ -708,7 +707,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
     }
     var heroEl = document.querySelector('.hero');
     var prog = document.getElementById('progress');
-    function onScroll(){ var h = document.documentElement; var max = h.scrollHeight - h.clientHeight; prog.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%'; if(heroEl){ var y = window.scrollY; heroEl.style.opacity = Math.max(0, 1 - y / 700); heroEl.style.transform = 'translateY(' + (y * 0.12).toFixed(1) + 'px)'; } }
+    function onScroll(){ var h = document.documentElement; var max = h.scrollHeight - h.clientHeight; prog.style.width = (max > 0 ? (h.scrollTop / max * 100) : 0) + '%'; if(heroEl){ var y = window.scrollY; heroEl.style.transform = 'translateY(' + (y * 0.12).toFixed(1) + 'px)'; } }
     window.addEventListener('scroll', onScroll, {passive: true}); onScroll();
     if(window.matchMedia('(pointer:fine)').matches){
       document.querySelectorAll('.btn').forEach(function(b){
