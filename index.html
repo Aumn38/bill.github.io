@@ -23,10 +23,31 @@ html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);line-height:1.6;overflow-x:hidden}
 a{color:inherit}
 ::selection{background:var(--accent);color:#04100a}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:#050807}
+::-webkit-scrollbar-thumb{background:#1d2b24;border-radius:99px}
 .wrap{max-width:1320px;margin:0 auto;padding:0 32px}
 .mono{font-family:var(--mono);text-transform:uppercase;letter-spacing:.2em;font-size:11px}
 .kicker{font-family:var(--mono);text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--dim);margin-bottom:20px}
 .kicker::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px}
+
+/* loader */
+.loader{position:fixed;inset:0;background:#030604;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:26px;animation:loaderOut .6s ease 1.4s forwards}
+@keyframes loaderOut{to{opacity:0;visibility:hidden}}
+.loader .bars{display:flex;gap:5px;align-items:flex-end;height:36px}
+.loader .bars i{display:block;width:3px;background:var(--accent);animation:eq 1s ease-in-out infinite}
+.loader .bars i:nth-child(1){animation-delay:0s}
+.loader .bars i:nth-child(2){animation-delay:.15s}
+.loader .bars i:nth-child(3){animation-delay:.3s}
+.loader .bars i:nth-child(4){animation-delay:.45s}
+.loader .bars i:nth-child(5){animation-delay:.6s}
+@keyframes eq{0%,100%{height:22%}50%{height:100%}}
+.loader .lt{font-family:var(--mono);letter-spacing:.3em;font-size:11px;color:var(--dim)}
+
+/* cursor */
+.cursor-ring{position:fixed;top:0;left:0;width:30px;height:30px;border:1px solid rgba(43,255,163,.7);border-radius:50%;pointer-events:none;z-index:100;transform:translate(-50%,-50%)}
+.cursor-dot{position:fixed;top:0;left:0;width:5px;height:5px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:100;transform:translate(-50%,-50%)}
+@media(pointer:coarse){.cursor-ring,.cursor-dot{display:none}}
 
 /* header */
 header{position:fixed;top:0;left:0;right:0;height:64px;z-index:50;background:rgba(5,8,7,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
@@ -39,7 +60,7 @@ nav.main a{font-family:var(--mono);letter-spacing:.2em;font-size:11px;text-trans
 nav.main a:hover{color:var(--accent)}
 .head-right{display:flex;align-items:center;gap:24px}
 .head-right .loc{font-family:var(--mono);letter-spacing:.18em;font-size:11px;color:var(--dim)}
-.btn{display:inline-block;font-family:var(--mono);letter-spacing:.2em;font-size:11px;text-transform:uppercase;text-decoration:none;padding:13px 22px;border-radius:0;transition:all .25s}
+.btn{display:inline-block;font-family:var(--mono);letter-spacing:.2em;font-size:11px;text-transform:uppercase;text-decoration:none;padding:13px 22px;border-radius:999px;transition:all .25s}
 .btn-solid{background:var(--accent);color:#04100a;font-weight:700}
 .btn-solid:hover{background:#7dffc8}
 .btn-ghost{background:transparent;color:var(--fg);border:1px solid var(--line2)}
@@ -68,6 +89,19 @@ nav.main a:hover{color:var(--accent)}
 .status .row .k{color:var(--dim)}
 .status .row .v{color:var(--fg)}
 .status .row .v.hot{color:var(--accent)}
+
+/* morph (scroll-driven states) */
+.morph-wrap{height:320vh;position:relative}
+.morph-sticky{position:sticky;top:0;height:100vh;display:grid;grid-template-columns:1fr 1.2fr;gap:48px;align-items:center;overflow:hidden}
+.morph-text h2{font-size:clamp(36px,4.5vw,64px);line-height:1.05;letter-spacing:-.015em;margin-bottom:40px}
+.morph-canvas{position:relative;height:78vh;border:1px solid var(--line);background:var(--panel2);overflow:hidden}
+.morph-canvas canvas{position:absolute;inset:0;width:100%;height:100%}
+.ms{font-family:var(--mono);letter-spacing:.12em;font-size:12px;color:var(--dim);padding:16px 0;border-top:1px solid var(--line);display:flex;gap:14px;align-items:center}
+.ms:last-child{border-bottom:1px solid var(--line)}
+.ms .mi{width:24px;height:2px;background:var(--line2);flex:none;transition:all .3s}
+.ms.active{color:var(--fg)}
+.ms.active .mi{background:var(--accent);width:40px}
+@media(max-width:900px){.morph-sticky{grid-template-columns:1fr}.morph-canvas{height:46vh}}
 
 /* sections */
 section{padding:150px 0}
@@ -128,6 +162,10 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
 </head>
 <body>
 
+<div class="loader" id="loader"><div class="bars"><i></i><i></i><i></i><i></i><i></i></div><div class="lt">BILL — LOADING SIGNAL</div></div>
+<div class="cursor-ring" id="cring"></div>
+<div class="cursor-dot" id="cdot"></div>
+
 <header>
 <div class="wrap">
 <a class="brand" href="#"><span class="sq"></span><span class="name">BILL</span></a>
@@ -170,6 +208,23 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
 <div class="row"><span class="k">INPUT</span><span class="v">想法</span></div>
 <div class="row"><span class="k">OUTPUT</span><span class="v">能用的工具</span></div>
 </div>
+</div>
+</div>
+</div>
+
+<div class="wrap">
+<div class="morph-wrap" id="morphWrap">
+<div class="morph-sticky">
+<div class="morph-text">
+<div class="kicker">From scatter to signal</div>
+<h2>从散点，<br>到<span style="color:var(--accent)">信号。</span></h2>
+<div class="morph-states">
+<div class="ms" data-s="0"><span class="mi"></span>01 / 散点 — 想法、文档、需求散落各处</div>
+<div class="ms" data-s="1"><span class="mi"></span>02 / 交织 — 把它们缠成一条线</div>
+<div class="ms" data-s="2"><span class="mi"></span>03 / 信号 — 变成能用的工具</div>
+</div>
+</div>
+<div class="morph-canvas"><canvas id="morph"></canvas></div>
 </div>
 </div>
 </div>
@@ -281,64 +336,175 @@ footer{border-top:1px solid var(--line);padding:90px 0 0;overflow:hidden}
 <script>
 (function(){
   var canvas = document.getElementById('signal');
-  if(!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var W, H, pts = [];
-  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function resize(){
-    var r = canvas.parentElement.getBoundingClientRect();
-    W = canvas.width = Math.max(300, r.width);
-    H = canvas.height = Math.max(300, r.height);
-  }
-  resize();
-  window.addEventListener('resize', resize);
-  var N = 90;
-  for(var i = 0; i < N; i++){
-    pts.push({x: Math.random(), y: Math.random(), s: Math.random() * 1.8 + 0.4, v: Math.random() * 0.0004 + 0.0001, o: Math.random() * Math.PI * 2});
-  }
-  var t = 0;
-  function draw(){
-    ctx.clearRect(0, 0, W, H);
-    ctx.strokeStyle = 'rgba(43,255,163,0.10)';
-    ctx.lineWidth = 1;
-    for(var k = 0; k < 3; k++){
-      ctx.beginPath();
-      for(var x = 0; x <= W; x += 8){
-        var y = H * (0.32 + k * 0.2) + Math.sin(x * 0.008 + t * 0.01 + k * 1.7) * 26;
-        if(x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+  if(canvas){
+    var ctx = canvas.getContext('2d');
+    var W, H, pts = [];
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function resize(){
+      var r = canvas.parentElement.getBoundingClientRect();
+      W = canvas.width = Math.max(300, r.width);
+      H = canvas.height = Math.max(300, r.height);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    var N = 90;
+    for(var i = 0; i < N; i++){
+      pts.push({x: Math.random(), y: Math.random(), s: Math.random() * 1.8 + 0.4, v: Math.random() * 0.0004 + 0.0001, o: Math.random() * Math.PI * 2});
+    }
+    var t = 0;
+    function draw(){
+      ctx.clearRect(0, 0, W, H);
+      var rcx = W * 0.68, rcy = H * 0.42;
+      var glow = ctx.createRadialGradient(rcx, rcy, 0, rcx, rcy, 230);
+      glow.addColorStop(0, 'rgba(43,255,163,0.12)');
+      glow.addColorStop(1, 'rgba(43,255,163,0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(rcx, rcy, 230, 0, Math.PI * 2); ctx.fill();
+      for(var i = 0; i < 48; i++){
+        var a = (i / 48) * Math.PI * 2 + t * 0.0004;
+        var len = 110 + Math.sin(t * 0.01 + i) * 14 + (i % 4 === 0 ? 42 : 0);
+        var al = 0.05 + 0.10 * (0.5 + 0.5 * Math.sin(t * 0.008 + i * 1.3));
+        ctx.strokeStyle = 'rgba(43,255,163,' + al.toFixed(2) + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(rcx + Math.cos(a) * 100, rcy + Math.sin(a) * 100);
+        ctx.lineTo(rcx + Math.cos(a) * (100 + len), rcy + Math.sin(a) * (100 + len));
+        ctx.stroke();
       }
-      ctx.stroke();
-    }
-    ctx.strokeStyle = 'rgba(43,255,163,0.35)';
-    ctx.beginPath();
-    ctx.arc(W * 0.68, H * 0.42, 90 + Math.sin(t * 0.008) * 6, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(W * 0.68, H * 0.42, 140, Math.PI * 0.2 + t * 0.002, Math.PI * 1.1 + t * 0.002);
-    ctx.stroke();
-    for(var i = 0; i < pts.length; i++){
-      var p = pts[i];
-      p.y -= p.v; p.o += 0.01;
-      if(p.y < -0.05){ p.y = 1.05; p.x = Math.random(); }
-      var px = p.x * W, py = p.y * H;
-      var tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(p.o));
-      ctx.fillStyle = 'rgba(43,255,163,' + (0.25 + 0.55 * tw).toFixed(2) + ')';
+      ctx.strokeStyle = 'rgba(43,255,163,0.10)';
+      ctx.lineWidth = 1;
+      for(var k = 0; k < 3; k++){
+        ctx.beginPath();
+        for(var x = 0; x <= W; x += 8){
+          var y = H * (0.32 + k * 0.2) + Math.sin(x * 0.008 + t * 0.01 + k * 1.7) * 26;
+          if(x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+      }
+      ctx.strokeStyle = 'rgba(43,255,163,0.35)';
       ctx.beginPath();
-      ctx.arc(px, py, p.s, 0, Math.PI * 2);
+      ctx.arc(rcx, rcy, 90 + Math.sin(t * 0.008) * 6, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(rcx, rcy, 140, Math.PI * 0.2 + t * 0.002, Math.PI * 1.1 + t * 0.002);
+      ctx.stroke();
+      for(var i = 0; i < pts.length; i++){
+        var p = pts[i];
+        p.y -= p.v; p.o += 0.01;
+        if(p.y < -0.05){ p.y = 1.05; p.x = Math.random(); }
+        var px = p.x * W, py = p.y * H;
+        var tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(p.o));
+        ctx.fillStyle = 'rgba(43,255,163,' + (0.25 + 0.55 * tw).toFixed(2) + ')';
+        ctx.beginPath();
+        ctx.arc(px, py, p.s, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.fillStyle = 'rgba(43,255,163,0.9)';
+      ctx.beginPath();
+      ctx.arc(rcx + Math.cos(t * 0.01) * 90, rcy + Math.sin(t * 0.01) * 90, 3.2, 0, Math.PI * 2);
       ctx.fill();
+      t++;
+      if(!reduced) requestAnimationFrame(draw);
     }
-    ctx.fillStyle = 'rgba(43,255,163,0.9)';
-    ctx.beginPath();
-    ctx.arc(W * 0.68 + Math.cos(t * 0.01) * 90, H * 0.42 + Math.sin(t * 0.01) * 90, 3.2, 0, Math.PI * 2);
-    ctx.fill();
-    t++;
-    if(!reduced) requestAnimationFrame(draw);
+    draw();
   }
-  draw();
   var io = new IntersectionObserver(function(es){
     es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
   }, {threshold: 0.12});
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  var ring = document.getElementById('cring'), dot = document.getElementById('cdot');
+  if(window.matchMedia('(pointer:fine)').matches && ring && dot){
+    var mx = window.innerWidth / 2, my = window.innerHeight / 2, rx = mx, ry = my;
+    document.addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY; dot.style.left = mx + 'px'; dot.style.top = my + 'px'; });
+    (function follow(){ rx += (mx - rx) * 0.16; ry += (my - ry) * 0.16; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(follow); })();
+  }
+  var loader = document.getElementById('loader');
+  if(loader){ window.addEventListener('load', function(){ setTimeout(function(){ loader.remove(); }, 400); }); }
+  var mc = document.getElementById('morph');
+  if(mc){
+    var mctx = mc.getContext('2d');
+    var MW = 0, MH = 0;
+    function mresize(){
+      var r = mc.parentElement.getBoundingClientRect();
+      MW = mc.width = Math.max(280, r.width);
+      MH = mc.height = Math.max(280, r.height);
+    }
+    mresize();
+    window.addEventListener('resize', mresize);
+    var wrap = document.getElementById('morphWrap');
+    var states = document.querySelectorAll('.ms');
+    var morphVisible = false;
+    new IntersectionObserver(function(es){ morphVisible = es[0].isIntersecting; }, {threshold: 0}).observe(wrap);
+    function morphProgress(){
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - window.innerHeight;
+      return Math.min(1, Math.max(0, -r.top / total));
+    }
+    function drawMorph(p, time){
+      mctx.clearRect(0, 0, MW, MH);
+      var cx = MW * 0.5, cy = MH * 0.5;
+      var wA = Math.max(0, 1 - p * 3);
+      var wB = p < 0.33 ? 0 : (p < 0.66 ? (p - 0.33) / 0.33 : 1 - (p - 0.66) / 0.34);
+      var wC = p < 0.66 ? 0 : (p - 0.66) / 0.34;
+      if(wA > 0.01){
+        mctx.save(); mctx.globalAlpha = wA;
+        var R = Math.min(MW, MH) * 0.3;
+        var rot = time * 0.0004;
+        mctx.strokeStyle = 'rgba(43,255,163,0.5)';
+        for(var ring = 1; ring <= 3; ring++){
+          mctx.beginPath();
+          for(var i = 0; i <= 6; i++){
+            var a = rot + i / 6 * Math.PI * 2;
+            var x = cx + Math.cos(a) * R * ring / 3, y = cy + Math.sin(a) * R * ring / 3;
+            if(i === 0) mctx.moveTo(x, y); else mctx.lineTo(x, y);
+          }
+          mctx.stroke();
+        }
+        mctx.strokeStyle = 'rgba(242,245,241,0.25)';
+        for(var i = 0; i < 6; i++){
+          var a = rot + i / 6 * Math.PI * 2;
+          mctx.beginPath(); mctx.moveTo(cx, cy); mctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R); mctx.stroke();
+        }
+        mctx.restore();
+      }
+      if(wB > 0.01){
+        mctx.save(); mctx.globalAlpha = wB;
+        for(var k = 0; k < 3; k++){
+          mctx.strokeStyle = k === 1 ? 'rgba(43,255,163,0.8)' : 'rgba(43,255,163,0.35)';
+          mctx.beginPath();
+          for(var x = 0; x <= MW; x += 6){
+            var y = cy + Math.sin(x * 0.02 + k * 2.1 + time * 0.001) * (MH * 0.18) * Math.sin(x * 0.006 + k);
+            if(x === 0) mctx.moveTo(x, y); else mctx.lineTo(x, y);
+          }
+          mctx.stroke();
+        }
+        mctx.restore();
+      }
+      if(wC > 0.01){
+        mctx.save(); mctx.globalAlpha = wC;
+        var N = 110;
+        for(var i = 0; i < N; i++){
+          var f = i / N;
+          var a = f * Math.PI * 6 + time * 0.002;
+          var r = (1 - f) * Math.min(MW, MH) * 0.28;
+          var x = cx + Math.cos(a) * r;
+          var y = cy + MH * 0.3 - f * MH * 0.6;
+          mctx.fillStyle = 'rgba(43,255,163,' + (0.25 + 0.75 * f).toFixed(2) + ')';
+          mctx.beginPath(); mctx.arc(x, y, 1.6 + f * 2, 0, Math.PI * 2); mctx.fill();
+        }
+        mctx.strokeStyle = 'rgba(43,255,163,0.25)';
+        mctx.beginPath(); mctx.moveTo(cx, cy + MH * 0.32); mctx.lineTo(cx, cy - MH * 0.32); mctx.stroke();
+        mctx.restore();
+      }
+      var idx = p < 0.33 ? 0 : (p < 0.66 ? 1 : 2);
+      states.forEach(function(s, i){ s.classList.toggle('active', i === idx); });
+    }
+    (function morphLoop(time){
+      requestAnimationFrame(morphLoop);
+      if(!morphVisible) return;
+      drawMorph(morphProgress(), time);
+    })(0);
+  }
 })();
 </script>
 </body>
