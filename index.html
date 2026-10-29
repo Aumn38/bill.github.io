@@ -476,24 +476,34 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
 <div id="cat" class="cat" role="button" aria-label="黑猫终端" title="点我打开终端">
 <svg viewBox="0 0 100 100" aria-hidden="true">
 <defs>
-<filter id="eyeGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+<radialGradient id="bodyGrad" cx="50%" cy="35%" r="75%">
+<stop offset="0%" stop-color="#12281c"/>
+<stop offset="60%" stop-color="#08130d"/>
+<stop offset="100%" stop-color="#040a07"/>
+</radialGradient>
 </defs>
-<path d="M78 88 Q92 88 92 72 Q92 60 82 60" fill="none" stroke="#123524" stroke-width="7" stroke-linecap="round"/>
-<path d="M22 92 Q18 62 50 58 Q82 62 78 92 Z" fill="#08130d" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
-<path d="M30 26 L26 6 L44 16 Z" fill="#08130d" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
-<path d="M70 26 L74 6 L56 16 Z" fill="#08130d" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
-<circle cx="50" cy="42" r="26" fill="#08130d" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
-<path d="M33 22 L31 12 L41 17 Z" fill="#123524"/>
-<path d="M67 22 L69 12 L59 17 Z" fill="#123524"/>
-<g filter="url(#eyeGlow)">
-<ellipse class="eye" cx="40" cy="42" rx="4.5" ry="5.5" fill="#2BFFA3"/>
-<ellipse class="eye" cx="60" cy="42" rx="4.5" ry="5.5" fill="#2BFFA3"/>
+<path d="M82 74 Q94 66 92 46 Q91 28 88 16" fill="none" stroke="#0d2117" stroke-width="9" stroke-linecap="round"/>
+<path d="M14 80 Q10 58 34 53 Q56 49 72 55 Q88 61 86 80 Z" fill="url(#bodyGrad)" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
+<ellipse cx="60" cy="60" rx="22" ry="7" fill="#ffffff" opacity=".06"/>
+<path d="M20 27 L17 15 L28 21 Z" fill="#08130d" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
+<path d="M36 23 L39 12 L46 21 Z" fill="#08130d" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
+<circle cx="30" cy="42" r="19" fill="url(#bodyGrad)" stroke="rgba(43,255,163,.25)" stroke-width="1"/>
+<path d="M20 24 L18 16 L26 20 Z" fill="#6e2f36"/>
+<path d="M37 21 L39 13 L44 20 Z" fill="#6e2f36"/>
+<g class="eye">
+<ellipse cx="23" cy="42" rx="6" ry="7" fill="#f2f5f1"/>
+<ellipse cx="24" cy="43" rx="2.6" ry="3.4" fill="#04100a"/>
+<circle cx="25.5" cy="41" r="1" fill="#2BFFA3"/>
 </g>
-<path d="M47 50 L53 50 L50 54 Z" fill="#2BFFA3" opacity=".8"/>
-<path d="M50 54 Q50 58 45 58 M50 54 Q50 58 55 58" fill="none" stroke="rgba(242,245,241,.5)" stroke-width="1.2" stroke-linecap="round"/>
+<g class="eye">
+<ellipse cx="37" cy="41" rx="4.5" ry="6" fill="#f2f5f1"/>
+<ellipse cx="38" cy="42" rx="2" ry="2.8" fill="#04100a"/>
+<circle cx="39" cy="40.5" r=".8" fill="#2BFFA3"/>
+</g>
+<path d="M10 50 L15 50 L12.5 53.5 Z" fill="#6e2f36"/>
+<path d="M12.5 53.5 Q12.5 56.5 9.5 56.5" fill="none" stroke="rgba(242,245,241,.5)" stroke-width="1.1" stroke-linecap="round"/>
 <g stroke="rgba(242,245,241,.28)" stroke-width="1">
-<line x1="24" y1="46" x2="8" y2="44"/><line x1="24" y1="50" x2="9" y2="52"/>
-<line x1="76" y1="46" x2="92" y2="44"/><line x1="76" y1="50" x2="91" y2="52"/>
+<line x1="14" y1="46" x2="2" y2="44"/><line x1="14" y1="51" x2="3" y2="54"/>
 </g>
 </svg>
 </div>
