@@ -329,6 +329,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
 <div class="row"><span class="k">INPUT</span><span class="v">想法</span></div>
 <div class="row"><span class="k">OUTPUT</span><span class="v">能用的工具</span></div>
 <div class="row"><span class="k">TIME</span><span class="v" id="clockTime">--:--:--</span></div>
+<div class="row"><span class="k">UPTIME</span><span class="v" id="uptimeTime">--</span></div>
 </div>
 </div>
 </div>
@@ -977,6 +978,22 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
     });
     var clockEl = document.getElementById('clockTime');
     if(clockEl){ (function tickClock(){ var d = new Date(); clockEl.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + ':' + ('0' + d.getSeconds()).slice(-2); setTimeout(tickClock, 1000); })(); }
+    var uptimeEl = document.getElementById('uptimeTime');
+    var uptimeStart = Date.parse('2026-10-31T00:00:00+08:00');
+    function pad2(n){ return ('0' + n).slice(-2); }
+    function tickUptime(){
+      if(!uptimeEl) return;
+      var diff = Date.now() - uptimeStart;
+      if(diff < 0){
+        var left = Math.floor(-diff / 1000);
+        uptimeEl.textContent = '距开始还有 ' + pad2(Math.floor(left / 3600)) + ':' + pad2(Math.floor(left / 60) % 60) + ':' + pad2(left % 60);
+      } else {
+        var sec = Math.floor(diff / 1000);
+        uptimeEl.textContent = Math.floor(sec / 86400) + '天 ' + pad2(Math.floor(sec / 3600) % 24) + ':' + pad2(Math.floor(sec / 60) % 60) + ':' + pad2(sec % 60);
+      }
+      setTimeout(tickUptime, 1000);
+    }
+    tickUptime();
     document.querySelectorAll('.ms').forEach(function(s){
       s.addEventListener('click', function(){
         var idx = parseInt(s.getAttribute('data-s'), 10);
