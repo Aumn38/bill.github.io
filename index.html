@@ -154,8 +154,9 @@ header.scrolled{background:rgba(5,8,7,.93)}
 @media(pointer:coarse){.cursor-ring,.cursor-dot{display:none}}
 
 /* header */
-header{position:fixed;top:0;left:0;right:0;height:64px;z-index:50;background:rgba(5,8,7,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
-header .wrap{height:64px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+header{position:fixed;top:0;left:0;right:0;height:32px;z-index:50;background:rgba(5,8,7,.75);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.08)}
+header .wrap{height:32px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+header .btn{padding:6px 14px;font-size:10px}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
 .brand .sq{width:12px;height:12px;background:var(--accent);flex:none}
 .brand .name{font-family:var(--mono);letter-spacing:.25em;font-size:13px;font-weight:700}
@@ -172,7 +173,7 @@ nav.main a:hover{color:var(--accent)}
 @media(max-width:900px){nav.main,.head-right .loc{display:none}}
 
 /* hero */
-.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:150px 0 56px;position:relative}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:118px 0 56px;position:relative}
 .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
 @media(max-width:900px){.hero-grid{grid-template-columns:1fr}.hero-visual{display:block;height:340px;margin-top:8px}}
 .hero h1{font-size:clamp(56px,7.5vw,104px);line-height:.98;letter-spacing:-.02em;font-weight:700}
@@ -288,7 +289,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
 </nav>
 <div class="head-right">
 <span class="loc">广东，中国</span>
-<button class="btn-mini" id="openPalette">指令 ⌘K</button>
 <a class="btn btn-solid" href="#contact">找到我</a>
 </div>
 </div>
@@ -320,11 +320,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
 <label>射线<input type="range" id="ctlRay" min="40" max="220" step="1" value="100"><span id="valRay">100%</span></label>
 <label>速度<input type="range" id="ctlSpeed" min="0" max="200" step="1" value="100"><span id="valSpeed">100%</span></label>
 <label>连线<input type="range" id="ctlLink" min="40" max="140" step="1" value="90"><span id="valLink">90</span></label>
-<div class="lab-toggles">
-<button class="lab-tg on" data-tg="links">连线</button>
-<button class="lab-tg on" data-tg="rays">射线</button>
-<button class="lab-tg on" data-tg="pulses">脉冲</button>
-</div>
 </div>
 </div>
 <div class="hero-foot">
@@ -910,7 +905,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);padding:90px
     function palOpen(){ if(!pal) return; pal.classList.add('open'); document.body.style.overflow = 'hidden'; palInput.value = ''; palRender(''); setTimeout(function(){ palInput.focus(); }, 30); }
     function palClose(){ if(!pal) return; pal.classList.remove('open'); document.body.style.overflow = ''; }
     if(pal){
-      document.getElementById('openPalette').addEventListener('click', palOpen);
+      var opBtn = document.getElementById('openPalette'); if(opBtn) opBtn.addEventListener('click', palOpen);
       pal.addEventListener('click', function(e){ if(e.target === pal) palClose(); });
       palInput.addEventListener('input', function(){ palRender(palInput.value); });
       palInput.addEventListener('keydown', function(e){
